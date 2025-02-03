@@ -1,0 +1,28 @@
+{{- define "main" }}
+<h1>{{ .Site.Title }}</h1>
+{{ .Content }}
+{{ $sections := .Site.Sections }}
+{{ $orderedSections := slice }}
+
+{{/* First add sections in the specified order */}}
+{{ range .Site.Params.sectionOrder }}
+{{ $sectionName := . }}
+{{ range $.Site.Sections }}
+{{ if eq .Section $sectionName }}
+{{ $orderedSections = $orderedSections | append . }}
+{{ end }}
+{{ end }}
+{{ end }}
+
+{{/* Then add any remaining sections that weren't specified in the order */}}
+{{ range $sections }}
+{{ if not (in $.Site.Params.sectionOrder .Section) }}
+{{ $orderedSections = $orderedSections | append . }}
+{{ end }}
+{{ end }}
+
+{{/* Display the sections */}}
+{{ range $orderedSections }}
+<h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+{{ end }}
+{{- end }}

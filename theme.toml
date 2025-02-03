@@ -1,0 +1,10 @@
+name = "En Passant"
+license = "MIT"
+description = "Blog theme with sidenotes"
+
+tags = ["blog"]
+features = ["sidenotes"]
+
+[author]
+    name = "Fanis Michalakis"
+    homepage = "https://fanismichalakis.fr"

@@ -1,0 +1,13 @@
+<span class="sidenote">
+    <label class="sidenote-label" for="{{- .Get 1 -}}">{{- .Get 2 | markdownify -}}</label>
+    <input class="sidenote-checkbox" style="display: none;" type="checkbox" id="{{- .Get 1 -}}"></input>
+    {{- if $offset := .Get 3 -}}
+    <span class="sidenote-content sidenote-{{- .Get 0 -}}" style="margin-top: 1rem">
+        {{- else -}}
+        <span class="sidenote-content sidenote-{{- .Get 0 -}}">
+            {{- end -}}
+            <span class="sidenote-delimiter">[{{- i18n "note" -}}:</span>
+            {{- .Inner -}}
+            <span class="sidenote-delimiter">]</span>
+        </span>
+    </span>

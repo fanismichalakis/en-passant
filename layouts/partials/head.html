@@ -1,0 +1,22 @@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{{- if hugo.IsProduction | or (eq site.Params.env "production") | and (ne .Params.robotsNoIndex true) }}
+<meta name="robots" content="index, follow">
+{{- else }}
+<meta name="robots" content="noindex, nofollow">
+{{- end }}
+
+{{- /* Title */}}
+<title>{{ if .IsHome }}{{ else }}{{ if .Title }}{{ .Title }} | {{ end }}{{ end }}{{ site.Title }}</title>
+
+{{- /* Styles */}}
+
+{{- $main := (resources.Get "css/main.css") }}
+<link rel="preload stylesheet" href="{{ $main.RelPermalink }}" as="style">
+
+{{- /* Scripts */}}
+{{- $menu := resources.Get "js/menu.js" }}
+<script defer src="{{ $menu.RelPermalink }}"></script>
+
+{{- partial "extend_head.html" . -}}

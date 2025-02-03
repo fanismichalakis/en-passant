@@ -1,0 +1,53 @@
+{{- $page := .page }}
+{{- $menuID := .menuID }}
+
+{{- with index site.Menus $menuID }}
+<nav class="menu">
+    <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <ul class="menu-items">
+        <li><a href="/">Home</a></li>
+        {{/* Add sections based on sectionOrder */}}
+        {{- range site.Params.sectionOrder }}
+        {{- $sectionName := . }}
+        {{- range site.Sections }}
+        {{- if eq .Section $sectionName }}
+        <li><a href="{{ .RelPermalink }}">{{ .Title | default (humanize .Section) }}</a></li>
+        {{- end }}
+        {{- end }}
+        {{- end }}
+        {{/* Add the rest of the menu items */}}
+        {{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" (sort . "Weight")) }}
+    </ul>
+</nav>
+{{- end }}
+
+{{- define "partials/inline/menu/walk.html" }}
+{{- $page := .page }}
+{{- range .menuEntries }}
+{{- $attrs := dict "href" .URL }}
+{{- if $page.IsMenuCurrent .Menu . }}
+{{- $attrs = merge $attrs (dict "class" "active" "aria-current" "page") }}
+{{- else if $page.HasMenuCurrent .Menu .}}
+{{- $attrs = merge $attrs (dict "class" "ancestor" "aria-current" "true") }}
+{{- end }}
+{{- $name := .Name }}
+{{- with .Identifier }}
+{{- with T . }}
+{{- $name = . }}
+{{- end }}
+{{- end }}
+<li>
+    <a {{- range $k, $v :=$attrs }} {{- with $v }} {{- printf " %s=%q" $k $v | safeHTMLAttr }} {{- end }} {{- end -}}>{{
+        $name }}</a>
+    {{- with .Children }}
+    <ul>
+        {{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" .) }}
+    </ul>
+    {{- end }}
+</li>
+{{- end }}
+{{- end }}

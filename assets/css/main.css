@@ -1,0 +1,343 @@
+/* The following CSS is partly inspired by Danila's Fedorin scss code for their Hugo blog
+    https://github.com/danilafedorin/hugo-theme-danila, especially for the sidenotes.
+    For simplicity and prototyping, vanilla CSS is used at the moment (no preprocessor).
+    Therefore, some widths are hardcoded, due to CSS variables not being supported in media queries conditions.
+    A preprocessor might be used in the future for easier customization once everything is settled.
+*/
+
+:root {
+    --gap: 1.5rem;
+    --content-gap: 1.25rem;
+    --main-width: 45rem;
+    --content: #071013;
+    --primary: #FCFCEE;
+    --secondary: rgb(153, 153, 176);
+    --highlight: blue;
+    --border-color: #bfbfbf;
+    --standard-border-width: .075rem;
+    --container-width: 45rem;
+    --container-min-padding: 1rem;
+    /* The container-width-threshold variables is not used but kept for reference. See media queries below. */
+    --container-width-threshold: calc(var(--container-width) + 2 * var(--container-min-padding));
+    --sidenote-padding: 1rem;
+    --sidenote-highlight-border-width: .2rem;
+    --margin-width: 30rem;
+    --margin-inner-offset: 0.5rem;
+    --margin-outer-offset: 1rem;
+}
+
+html {
+    background-color: var(--primary);
+    color: var(--content);
+    font-family: monospace;
+    /* Sidenotes overlap with main content when using bigger font size (e.g. 20px and more). */
+    /* Ideally, the sidenote should adapt to some extent, and then be sent to the main content flow above a certain font size. */
+    /* This is TBD for better accessibility. */
+    font-size: 16px;
+}
+
+.main {
+    max-width: calc(var(--main-width) + var(--gap) * 2);
+    margin: auto;
+    text-align: justify;
+}
+
+.container {
+    position: relative;
+    margin: auto;
+    width: 100%;
+    max-width: var(--container-width);
+    box-sizing: border-box;
+    @media screen and (max-width: 47rem) { /* Max-width = container-width-threshold */
+        padding: 0 var(--container-min-padding) 0 var(--container-min-padding);
+        margin: 0;
+        max-width: calc(var(--container-width) + 2 * var(--container-min-padding));
+    }
+
+    @media screen and (max-width: 108.5rem) { /* Max-width = container-width-threshold + 2 * margin-width + margin-inner-offset + margin-outer-offset */
+            left: calc(-(var(--margin-width) + var(--margin-inner-offset) + var(--margin-outer-offset))/2);
+    }
+    
+    @media print {
+        left: calc(-(var(--margin-width) + var(--margin-inner-offset) + var(--margin-outer-offset))/2);
+    }
+
+    @media screen and (max-width: 78.5rem) { /* Max-width = container-width-threshold + margin-width + margin-inner-offset + margin-outer-offset */
+        left: 0;
+    }
+        
+    @media print {
+        left: 0;
+    }
+}
+
+.page-header,
+.post-header {
+    margin: 24px auto var(--content-gap) auto;
+}
+
+.post-title {
+    margin-bottom: 2px;
+    font-size: 40px;
+}
+
+.post-meta,
+.breadcrumbs {
+    color: var(--secondary);
+    font-size: 14px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.post-meta .i18n_list li {
+    display: inline-flex;
+    list-style: none;
+    margin: auto 3px;
+    box-shadow: 0 1px 0 var(--secondary);
+}
+
+.post-content {
+    color: var(--content);
+}
+
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6 {
+    margin: 24px 0 16px;
+}
+
+.post-content h1 {
+    margin: 40px auto 32px;
+    font-size: 40px;
+}
+
+.post-content h2 {
+    margin: 32px auto 24px;
+    font-size: 32px;
+}
+
+.post-content h3 {
+    font-size: 24px;
+}
+
+.post-content h4 {
+    font-size: 16px;
+}
+
+.post-content h5 {
+    font-size: 14px;
+}
+
+.post-content h6 {
+    font-size: 12px;
+}
+
+.post-content a,
+.toc a:hover {
+    box-shadow: 0 1px 0;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+.sidenote {
+    &:hover {
+        .sidenote-label {
+            background-color: var(--primary);
+            color: var(--highlight);
+        }
+
+        .sidenote-content {
+            border: var(--sidenote-highlight-border-width) dashed;
+            padding: calc(var(--sidenote-padding) - (var(--sidenote-highlight-border-width) - var(--standard-border-width)));
+            border-color: var(--primary);
+        }
+    }
+}
+
+.sidenote-label {
+    border-bottom: .2rem dashed var(--primary);
+}
+
+.sidenote-checkbox {
+    display: none;
+}
+
+.sidenote-content {
+    display: block;
+    position: absolute;
+    width: var(--margin-width);
+    box-sizing: border-box;
+    /* border: var(--standard-border-width) solid var(--border-color); */
+    border-radius: .2rem;
+    margin-top: -1.5rem;
+    padding: var(--sidenote-padding);
+    text-align: left;
+
+    &.sidenote-right {
+        right: 0;
+        margin-right: -(var(--margin-width) + var(--container-min-padding) + var(--margin-inner-offset));
+
+        @media screen and (max-width: 108.5rem) { /* Max-width = container-width-threshold + 2 * margin-width + margin-inner-offset + margin-outer-offset */
+            position: relative;
+            margin: 1rem auto;
+            display: block;
+        }
+            
+        @media print {
+            display: none;
+        }
+            
+    }
+
+    &.sidenote-left {
+        left: 0;
+        margin-left: -(var(--margin-width) + var(--container-min-padding) + var(--margin-inner-offset));
+
+        @media screen and (max-width: 108.5rem) { /* Max-width = container-width-threshold + 2 * margin-width + margin-inner-offset + margin-outer-offset */
+            position: relative;
+            margin: 1rem auto;
+            display: block;
+        }
+            
+        @media print {
+            display: none;
+        }
+    }
+}
+
+.sidenote-delimiter {
+    display: none;
+}
+
+p::target-text {
+    background-color: black;
+    color: white;
+}
+
+.menu {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--primary);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: transform 0.3s ease-in-out;
+    padding: 1rem 0;
+    border-bottom: 4px double black;
+}
+
+.menu-items {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 0 4rem;
+    padding: 0;
+}
+
+.menu-items li {
+    list-style: none;
+    margin: 0 1rem;
+    font-size: 1.2rem;
+}
+
+.menu-items li:first-child {
+    margin-right: auto;
+    /* This pushes other items to the right */
+}
+
+.menu-items li:hover {
+    background-color: var(--highlight);
+}
+
+.menu-items li:hover a {
+    color: var(--primary);
+}
+
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-right: 1rem;
+}
+
+.hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background: var(--content);
+    margin: 5px 0;
+    transition: 0.3s;
+}
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    .menu {
+        padding: 0.5rem 0;
+    }
+
+    .menu ul {
+        display: none;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: 1rem;
+        background-color: var(--primary);
+        flex-direction: column;
+        align-items: flex-start;
+        border-bottom: 4px double black;
+    }
+
+    .menu ul.active {
+        display: flex;
+    }
+
+    .menu li {
+        margin: 0.5rem 0;
+        width: 100%;
+        text-align: left;
+    }
+
+    .menu li:first-child {
+        position: static;
+        left: auto;
+    }
+
+    /* Hamburger animation */
+    .hamburger[aria-expanded="true"] span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger[aria-expanded="true"] span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger[aria-expanded="true"] span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+    }
+}
+
+.menu.scroll-down {
+    transform: translateY(-100%);
+}
+
+/* Prevent body scroll when menu is open */
+body.menu-open {
+    overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .menu {
+        transition: transform 0.3s ease-in-out;
+    }
+}
